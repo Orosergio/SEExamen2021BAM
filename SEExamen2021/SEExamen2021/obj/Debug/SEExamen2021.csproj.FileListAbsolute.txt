@@ -1,0 +1,10 @@
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\bin\Debug\SEExamen2021.exe.config
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\bin\Debug\SEExamen2021.exe
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\bin\Debug\SEExamen2021.pdb
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\obj\Debug\SEExamen2021.csprojAssemblyReference.cache
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\obj\Debug\SEExamen2021.Form1.resources
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\obj\Debug\SEExamen2021.Properties.Resources.resources
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\obj\Debug\SEExamen2021.csproj.GenerateResource.cache
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\obj\Debug\SEExamen2021.csproj.CoreCompileInputs.cache
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\obj\Debug\SEExamen2021.exe
+D:\Desktop\EXAMEN2021BAM\SEExamen2021\SEExamen2021\obj\Debug\SEExamen2021.pdb
