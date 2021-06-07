@@ -16,11 +16,19 @@ namespace SEExamen2021
         public Form1()
         {
             InitializeComponent();
+            
         }
         clsConexion cn = new clsConexion();
         private void Form1_Load(object sender, EventArgs e)
         {
             cn.abrir();
+            txtTelefonoOne.MaxLength = 8;
+            txtTelefonoTwo.MaxLength = 8;
+            txtPhoneOne.MaxLength = 8;
+            txtPhoneTwo.MaxLength = 8;
+            txtDpi.MaxLength = 13;
+            txtDPIC.MaxLength = 13;
+            
         }
 
         private void textBox7_TextChanged(object sender, EventArgs e)
@@ -40,6 +48,7 @@ namespace SEExamen2021
                 grpBoxInsertar.Visible = true;
                 grpModificar.Visible = false;
                 grpBoxDelete.Visible = false;
+                grpBusquedaCliente.Visible = false;
                 txtCasada.Text = "NULL";
                 loadDataI();             
             }else if (cmbCRUD.SelectedIndex==2)
@@ -47,13 +56,30 @@ namespace SEExamen2021
                 grpModificar.Visible = true;
                 grpBoxInsertar.Visible = false;
                 grpBoxDelete.Visible = false;
+                grpBusquedaCliente.Visible = false;
                 loadDataU();
             }else if (cmbCRUD.SelectedIndex==3)
             {
-                grpBoxDelete.Visible = true;
                 grpModificar.Visible = false;
                 grpBoxInsertar.Visible = false;
+                grpBusquedaCliente.Visible = false;
+                grpBoxDelete.Visible = true;
                 loadDataD();
+            }else if (cmbCRUD.SelectedIndex==4)
+            {
+                grpBoxDelete.Visible = false;
+                grpModificar.Visible = false;
+                grpBoxInsertar.Visible = false;
+                grpBusquedaCliente.Visible = true;
+                loadDataI();
+            }else if (cmbCRUD.SelectedIndex==5)
+            {
+                grpModificar.Visible = false;
+                grpBoxInsertar.Visible = false;
+                grpBusquedaCliente.Visible = false;
+                grpBoxDelete.Visible = false;
+                grpBoxReportes.Visible = true;
+                loadDataI();
             }
             cmbCRUD.SelectedIndex = 0;
         }
@@ -72,6 +98,8 @@ namespace SEExamen2021
                 da.Fill(dt);
 
                 dgvInserciones.DataSource = dt;
+                dgvBusqueda.DataSource = dt;
+                dgvReportes.DataSource = dt;
             }
             catch (Exception ex)
             {
@@ -330,7 +358,7 @@ namespace SEExamen2021
         private void btnSelectDCode_Click(object sender, EventArgs e)
         {
             string codigoCliente = dgvDelete.CurrentRow.Cells[0].Value.ToString();
-            MessageBox.Show("Valor de codigo: " + codigoCliente);
+            //MessageBox.Show("Valor de codigo: " + codigoCliente);
             txtCodeToD.Text = codigoCliente;
             txtPrimerNombreD.Text = dgvDelete.CurrentRow.Cells[1].Value.ToString();
             txtSegundoNombreD.Text = dgvDelete.CurrentRow.Cells[2].Value.ToString();
@@ -340,6 +368,205 @@ namespace SEExamen2021
             string fechaNac = dgvDelete.CurrentRow.Cells[8].Value.ToString();
             dtpNacimientoD.Value = DateTime.Parse(fechaNac);            
             
+        }
+
+        private void txtSearchS_KeyUp(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                string cadena = "SELECT * FROM te_clientes WHERE cli_codigo_cliente like '" + txtSearchS.Text + "%' and estado=1;";
+                cn.abrir();
+                SqlCommand comm = new SqlCommand(cadena, cn.conectar);
+                comm.ExecuteNonQuery();
+                //SqlDataReader reader = comm.ExecuteReader();
+                DataTable dt = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter(comm);
+                da.Fill(dt);
+
+                dgvBusqueda.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error al mostrar los datos" + ex);
+
+            }
+            cn.cerrar();
+        }
+
+        private void btnConsultaC_Click(object sender, EventArgs e)
+        {
+            string codigoCliente = dgvBusqueda.CurrentRow.Cells[0].Value.ToString();
+           // MessageBox.Show("Valor de codigo: " + codigoCliente);
+            txtConsultaC.Text = codigoCliente;
+            txtFirstN.Text = dgvBusqueda.CurrentRow.Cells[1].Value.ToString();
+            txtSecondN.Text = dgvBusqueda.CurrentRow.Cells[2].Value.ToString();
+            txtFirstL.Text = dgvBusqueda.CurrentRow.Cells[3].Value.ToString();
+            txtSecondL.Text = dgvBusqueda.CurrentRow.Cells[4].Value.ToString();
+            txtMarriageL.Text = dgvBusqueda.CurrentRow.Cells[5].Value.ToString();
+            txtAddress.Text = dgvBusqueda.CurrentRow.Cells[6].Value.ToString();
+            txtPhoneOne.Text = dgvBusqueda.CurrentRow.Cells[7].Value.ToString();
+            txtPhoneTwo.Text = dgvBusqueda.CurrentRow.Cells[8].Value.ToString()   ;
+            txtDPIC.Text = dgvBusqueda.CurrentRow.Cells[9].Value.ToString();
+            string fechaNac = dgvBusqueda.CurrentRow.Cells[10].Value.ToString();
+            dtpNacimientoC.Value = DateTime.Parse(fechaNac);
+          
+            string estado = dgvBusqueda.CurrentRow.Cells[11].Value.ToString();
+            if (estado == "1")
+            {
+                rdbActivoCli.Checked = true;
+                rdbInactivoCli.Checked = false;
+            }
+            else if (estado == "0")
+            {
+                rdbActivoCli.Checked = false;
+                rdbInactivoCli.Checked = true;
+            }
+        }
+
+        private void rdbActivoCli_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdbActivoCli.Checked)
+            {
+                txtEstadoCli.Text = "1";
+            }else if (rdbInactivoCli.Checked)
+            {
+                txtEstadoCli.Text = "0";
+            }
+        }
+
+        private void txtTelefonoOne_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Para obligar a que sólo se introduzcan números
+            if (Char.IsDigit(e.KeyChar))
+            {
+                e.Handled = false;
+            }
+            if (Char.IsLetter(e.KeyChar)) //Al pulsar una letra
+            {
+                e.Handled = true; //No se acepta
+            }
+        }
+
+        private void txtTelefonoTwo_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Para obligar a que sólo se introduzcan números
+            if (Char.IsDigit(e.KeyChar))
+            {
+                e.Handled = false;
+            }
+            if (Char.IsLetter(e.KeyChar)) //Al pulsar una letra
+            {
+                e.Handled = true; //No se acepta
+            }
+        }
+
+        private void txtDpi_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Para obligar a que sólo se introduzcan números
+            if (Char.IsDigit(e.KeyChar))
+            {
+                e.Handled = false;
+            }
+            if (Char.IsLetter(e.KeyChar)) //Al pulsar una letra
+            {
+                e.Handled = true; //No se acepta
+            }
+        }
+
+        private void txtSearchS_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Para obligar a que sólo se introduzcan números
+            if (Char.IsDigit(e.KeyChar))
+            {
+                e.Handled = false;
+            }
+            if (Char.IsLetter(e.KeyChar)) //Al pulsar una letra
+            {
+                e.Handled = true; //No se acepta
+            }
+        }
+        
+        private void txtSearchReporte_KeyUp(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                
+                string cadena = "SELECT * FROM te_clientes WHERE cli_nombre1 like '" + txtSearchReporte.Text + "%' and estado=1;";
+                cn.abrir();
+                SqlCommand comm = new SqlCommand(cadena, cn.conectar);
+                comm.ExecuteNonQuery();
+                //SqlDataReader reader = comm.ExecuteReader();
+                DataTable dt = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter(comm);
+                da.Fill(dt);
+
+                dgvReportes.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error al mostrar los datos" + ex);
+
+            }
+            cn.cerrar();
+        }
+
+        private void txtSearchReporte_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rdbNombre_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdbNombre.Checked)
+            {
+                txtSearchReporte.Visible = true;
+                dtpInicio.Value = DateTime.Now;
+                dtpFinal.Value = DateTime.Now;
+                dtpInicio.Visible = false;
+                dtpFinal.Visible = false;
+                
+            }
+        }
+
+       
+
+        private void rdbFecha_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdbFecha.Checked)
+            {
+                txtSearchReporte.Text = "";
+                txtSearchReporte.Visible = false;
+                dtpInicio.Visible = true;
+                dtpFinal.Visible = true;
+            }
+        }
+
+        private void btnBusqueda_Click(object sender, EventArgs e)
+        {
+            
+            string fechaInic = dtpInicio.Value.ToString("MM/dd/yyyy");
+            string fechaFin = dtpFinal.Value.ToString("MM/dd/yyyy");
+           // MessageBox.Show("1:"+fechaInic+"_2:"+fechaFin);
+            try
+            {
+
+                string cadena = "SELECT * FROM te_clientes WHERE cli_fechaNacimiento BETWEEN '"+fechaInic+"' AND '"+fechaFin+"';";
+                cn.abrir();
+                SqlCommand comm = new SqlCommand(cadena, cn.conectar);
+                comm.ExecuteNonQuery();
+                //SqlDataReader reader = comm.ExecuteReader();
+                DataTable dt = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter(comm);
+                da.Fill(dt);
+
+                dgvReportes.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error al mostrar los datos" + ex);
+
+            }
+            cn.cerrar();
         }
     }
 }
